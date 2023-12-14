@@ -1,4 +1,5 @@
 import { Mathf } from '../Mathf.js'
+import { Time } from '../Time.js';
 
 export class Vector2
 {
@@ -32,6 +33,18 @@ export class Vector2
         return Vector2.NormalizeVector(this);
     }
 
+    get timeScaled()
+    {
+        return new Vector2(this.x * Time.deltaTime, this.y * Time.deltaTime);
+    }
+
+    Set(x,y)
+    {
+        this.x = x;
+        this.y = y;
+        return this;
+    }
+
     DistanceFrom(other)
     {
         Vector2.IsVectorThrow(other);
@@ -49,6 +62,7 @@ export class Vector2
         Vector2.IsVectorThrow(vector);
         this.x += vector.x;
         this.y += vector.y;
+        return this;
     }
 
     Rotate(degrees)
@@ -56,6 +70,7 @@ export class Vector2
         const rotated = Vector2.RotateVector(degrees);
         this.x = rotated.x;
         this.y = rotated.y;
+        return this;
     }
 
     RotateTowards(other)
@@ -63,6 +78,7 @@ export class Vector2
         Vector2.IsVectorThrow(other);
         this.x = other.x - this.x;
         this.y = other.y - this.y;
+        return this;
     }
 
     Normalize()
@@ -70,6 +86,7 @@ export class Vector2
         const normalizedVector = Vector2.NormalizeVector(this);
         this.x = normalizedVector.x;
         this.y  = normalizedVector.y;
+        return this;
     }
 
 
@@ -79,6 +96,16 @@ export class Vector2
         {
             new Error("Object '" + object + "' is not a vector");
         }
+    }
+
+    static Add(vectorA, vectorB)
+    {
+        return new Vector2(vectorA.x + vectorB.x, vectorA.y + vectorB.y);   
+    }
+
+    static Scale(vector, scale)
+    {
+        return new Vector2(vector.x * scale, vector.y * scale)
     }
 
     static RotateVector(vector, degrees)

@@ -1,5 +1,6 @@
 import { EventSystem } from './EventSystem.js'
 import { GameObject } from './GameObject.js';
+import { Renderer } from './Renderer.js';
 import { Time } from './Time.js'
 
 export class Game
@@ -9,6 +10,7 @@ export class Game
     #isRunning = false;
     #eventSystem = null;
     #time = null;
+    #renderer = null;
 
     #gameObjects = [];
     #removedGameObjects = [];
@@ -27,6 +29,7 @@ export class Game
 
         this.#eventSystem = new EventSystem();
         this.#time = new Time();
+        this.#renderer = new Renderer("canvas");
 
         console.log("GameEngine Initialized")
         this.Start();
@@ -65,12 +68,14 @@ export class Game
         this.#removedGameObjects = [];
     }
 
-    Render(context)
+    Render()
     {
+        this.#renderer.PrepareCanvas();
         for(const gameObject of this.#gameObjects)
         {
-            gameObject.InternalRender(context);
+            gameObject.InternalRender(this.#renderer.context);
         }
+        this.#renderer.RestoreCanvas();
     }
 
     Instantiate(object)
