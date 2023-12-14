@@ -1,30 +1,42 @@
 import { EventSystem } from './EventSystem.js'
-import { InputHandler } from './InputHandler.js'
+import { GameObject } from './GameObject.js';
+import { Time } from './Time.js'
 
 export class Game
 {
-    isRunning = false;
-    eventSystem = null;
-    input = null;
-    time = null;
+    static #instance = null;
 
-    gameObjects = [];
-    removedGameObjects = [];
+    #isRunning = false;
+    #eventSystem = null;
+    #time = null;
+
+    #gameObjects = [];
+    #removedGameObjects = [];
 
     constructor()
     {
-        this.eventSystem = new EventSystem();
-        this.input = new InputHandler(this.eventSystem);
-        this.time = new Time();
+        // Ensure single instance of Game
+        if(Game.#instance == null)
+        {
+            Game.#instance = this;
+        }
+        else
+        {
+            return Game.#instance;
+        }
 
+        this.#eventSystem = new EventSystem();
+        this.#time = new Time();
+
+        console.log("GameEngine Initialized")
         this.Start();
     }
 
     GameLoop(currentTimeStamp)
     {
-        if(!this.isRunning) return;
+        if(!this.#isRunning) return;
 
-        this.time.SetDeltaTime(currentTimeStamp);
+        this.#time.SetDeltaTime(currentTimeStamp);
         this.Update();
         this.Render();
 
@@ -33,28 +45,29 @@ export class Game
 
     Start()
     {
-        for(const gameObject in this.gameObjects)
+        for(const gameObject of this.#gameObjects)
         {
             gameObject.InternalStart();
         }
-
-        this.isRunning = true;
+        console.log("GameObjects Initialized");
+        this.#isRunning = true;
+        console.log("GameLoop Begin")
         requestAnimationFrame((currentTimeStamp) => this.GameLoop(currentTimeStamp));
     }
 
     Update()
     {
-        for(const gameObject in this.gameObjects)
+        for(const gameObject of this.#gameObjects)
         {
             gameObject.InternalUpdate();
         }
-        this.gameObjects = this.gameObjects.filter(gameObject => !this.removedGameObjects.includes(gameObject));
-        this.removedGameObjects = [];
+        this.#gameObjects = this.#gameObjects.filter(gameObject => !this.#removedGameObjects.includes(gameObject));
+        this.#removedGameObjects = [];
     }
 
     Render(context)
     {
-        for(const gameObject in this.gameObjects)
+        for(const gameObject of this.#gameObjects)
         {
             gameObject.InternalRender(context);
         }
@@ -62,14 +75,16 @@ export class Game
 
     Instantiate(object)
     {
-        object.game = game;
-        this.gameObjects.push(object);
+        GameObject.IsGameObjectThrow(object);
+        object.game = this;
+        this.#gameObjects.push(object);
         object.InternalStart();
     }
 
     Destroy(object)
     {
-        this.removedGameObjects.push(object);
+        GameObject.IsGameObjectThrow(object);
+        this.#removedGameObjects.push(object);
         object.InternalOnDestroy();
     }
 }

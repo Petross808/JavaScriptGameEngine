@@ -1,33 +1,22 @@
 export class GameObject
 {
-    get game() {
-        return this.transform;
-    }
+    #game;
+    #transform;
+    #components;
 
-    set game(game) {
-        this.game = game;
-    }
+    get game() { return this.#game; }
+    get transform() { return this.#transform; }
 
-    get transform() {
-        return this.transform;
-    }
-
-    set transform(transform) {
-        this.transform = transform;
-    }
-
-    get components() {
-        return this.components;
-    }
+    set game(game) { this.#game = game; }
 
     constructor(transform)
     {
-        this.transform = transform;
+        this.#transform = transform;
     }
 
     InternalStart()
     {
-        for(component in components)
+        for(const component of this.#components)
         {
             component.Start();
         }
@@ -36,7 +25,7 @@ export class GameObject
 
     InternalRender(context)
     {
-        for(component in components)
+        for(const component of this.#components)
         {
             component.Render(context);
         }
@@ -45,7 +34,7 @@ export class GameObject
 
     InternalUpdate()
     {
-        for(component in components)
+        for(const component of this.#components)
         {
             component.Update();
         }
@@ -54,7 +43,7 @@ export class GameObject
 
     InternalOnDestroy()
     {
-        for(component in components)
+        for(const component of this.#components)
         {
             component.OnDestroy();
         }
@@ -68,22 +57,35 @@ export class GameObject
 
     AddComponent(type)
     {
-        if(type instanceof Component)
-        component = Reflect.construct(componentType, this)
-        this.components.push(component);
+        if(!(type instanceof Component)) return;
+        
+        component = Reflect.construct(type, [this], undefined);
+        this.#components.push(component);
         return component;
     }
 
     GetComponent(type)
     {
-        returnComp = this.components.filter(component => component instanceof type);
+        if(!(type instanceof Component)) return;
+
+        returnComp = this.#components.filter(component => component instanceof type);
         return returnComp[0];
     }
 
     RemoveComponent(type)
     {
+        if(!(type instanceof Component)) return;
+
         toRemove = this.components.findIndex(component => component instanceof type);
         toRemove.OnDestroy();
-        this.components = this.components.filter(component => component !== toRemove );
+        this.#components = this.#components.filter(component => component !== toRemove );
+    }
+
+    static IsGameObjectThrow(object)
+    {
+        if(!(object instanceof GameObject))
+        {
+            new Error("Object '" + object + "' is not a GameObject");
+        }
     }
 }

@@ -1,31 +1,16 @@
 export class Component 
 {
-    get gameObject() {
-        return this.gameObject;
-    }
+    #gameObject;
+
+    get gameObject() { return this.#gameObject; }
 
     constructor(gameObject) 
     {
-        this.gameObject = gameObject;
+        this.#gameObject = gameObject;
     }
 
-    Start()
-    {
-
-    }
-
-    Update()
-    {
-
-    }
-
-    OnDestroy()
-    {
-
-    }
-
-    Render(context)
-    {
-
-    }
+    Start() {}
+    Update() {}
+    OnDestroy() {}
+    Render(context) {}
 }

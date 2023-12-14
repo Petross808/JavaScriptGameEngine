@@ -1,15 +1,18 @@
 export class EventSystem
 {
-    keyPressed = {
-        up: new Event("upPressed"),
-        down: new Event("downPressed"),
-        left: new Event("leftPressed"),
-        right: new Event("rightPressed")
-    };
-    keyReleased = {
-        up: new Event("upReleased"),
-        down: new Event("downReleased"),
-        left: new Event("leftReleased"),
-        right: new Event("rightReleased")
-    };
+    // Ensure single instance of EventSystem
+    static #instance = null;
+    constructor()
+    {
+        if(EventSystem.#instance == null)
+        {
+            EventSystem.#instance = this;
+        }
+        else
+        {
+            return EventSystem.#instance;
+        }
+    }
+
+    static events = {};
 }
