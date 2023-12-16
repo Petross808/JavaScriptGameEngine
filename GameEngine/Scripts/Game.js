@@ -1,6 +1,10 @@
+
+import { Platform } from '../../Game/Platform.js';
+import { Camera } from './Camera.js';
 import { EventSystem } from './EventSystem.js'
 import { GameObject } from './GameObject.js';
 import { Renderer } from './Renderer.js';
+import { Vector2 } from './Structs/Vector2.js';
 import { Time } from './Time.js'
 
 export class Game
@@ -11,9 +15,14 @@ export class Game
     #eventSystem = null;
     #time = null;
     #renderer = null;
+    #camera = null;
 
     #gameObjects = [];
     #removedGameObjects = [];
+
+    get renderer() { return this.#renderer; }
+    get camera() { return this.#camera; }
+    set camera(value) { this.#camera = value; }
 
     constructor()
     {
@@ -30,6 +39,7 @@ export class Game
         this.#eventSystem = new EventSystem();
         this.#time = new Time();
         this.#renderer = new Renderer("canvas");
+        this.#camera = this.Instantiate(new Camera());
 
         console.log("GameEngine Initialized")
         this.Start();
@@ -64,13 +74,14 @@ export class Game
         {
             gameObject.InternalUpdate();
         }
+        this.#camera.Update();
         this.#gameObjects = this.#gameObjects.filter(gameObject => !this.#removedGameObjects.includes(gameObject));
         this.#removedGameObjects = [];
     }
 
     Render()
     {
-        this.#renderer.PrepareCanvas();
+        this.#renderer.PrepareCanvas(this.#camera);
         for(const gameObject of this.#gameObjects)
         {
             gameObject.InternalRender(this.#renderer.context);
@@ -78,12 +89,20 @@ export class Game
         this.#renderer.RestoreCanvas();
     }
 
-    Instantiate(object)
+    Instantiate(object, position = new Vector2(0, 0), rotation = new Vector2(1,0), scale = new Vector2(1,1), parent = null)
     {
         GameObject.IsGameObjectThrow(object);
+
         object.game = this;
+        object.transform.position = position;
+        object.transform.rotation = rotation;
+        object.transform.scale = scale;
+        object.transform.parent = parent;
+
         this.#gameObjects.push(object);
         object.InternalStart();
+
+        return object;
     }
 
     Destroy(object)

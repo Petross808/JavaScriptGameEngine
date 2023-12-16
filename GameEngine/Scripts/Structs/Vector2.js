@@ -105,13 +105,18 @@ export class Vector2
 
     static Scale(vector, scale)
     {
-        return new Vector2(vector.x * scale, vector.y * scale)
+        return new Vector2(vector.x * scale, vector.y * scale);
+    }
+
+    static Multiply(vectorA, vectorB)
+    {
+        return new Vector2(vectorA.x*vectorB.x, vectorA.y*vectorB.y);
     }
 
     static RotateVector(vector, degrees)
     {
         Vector2.IsVectorThrow(vector);
-        let rad = degrees * Math.PI/180
+        let rad = degrees * Math.PI/180;
         let rotationMatrix = [[Math.cos(rad),-1*Math.sin(rad)],[Math.sin(rad),Math.cos(rad)]];
         let currentRotation = [[vector.x],[vector.y]];
         let final = Mathf.MatrixMultiply(rotationMatrix, currentRotation);

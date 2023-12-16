@@ -3,6 +3,7 @@ export class Renderer
     #canvas;
     #context;
 
+    get canvas() { return this.#canvas; }
     get context() { return this.#context; }
 
     constructor(canvasID)
@@ -23,11 +24,11 @@ export class Renderer
     {
         this.#context.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
         this.#context.save();
-        this.#context.translate(-camera.x, -camera.y);
+        this.#context.translate(-camera.transform.position.x, -camera.transform.position.y);
     }
 
     RestoreCanvas()
     {
-        this.ctx.restore();
+        this.#context.restore();
     }
 }

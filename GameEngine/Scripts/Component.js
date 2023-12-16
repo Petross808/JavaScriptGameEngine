@@ -13,4 +13,12 @@ export class Component
     Update() {}
     OnDestroy() {}
     Render(context) {}
+
+    static IsComponentClassThrow(type)
+    {
+        if(!(type.prototype instanceof Component))
+        {
+            throw new Error("'" + type + "' is not a component class")
+        }
+    }
 }

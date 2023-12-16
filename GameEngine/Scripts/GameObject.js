@@ -1,3 +1,6 @@
+import { Transform } from "./Structs/Transform.js";
+import { Component } from "./Component.js"
+
 export class GameObject
 {
     #game;
@@ -9,9 +12,10 @@ export class GameObject
 
     set game(game) { this.#game = game; }
 
-    constructor(transform)
+    constructor()
     {
-        this.#transform = transform;
+        this.#transform = new Transform();
+        this.#components = [];
     }
 
     InternalStart()
@@ -20,7 +24,7 @@ export class GameObject
         {
             component.Start();
         }
-        Start();
+        this.Start();
     }
 
     InternalRender(context)
@@ -29,7 +33,7 @@ export class GameObject
         {
             component.Render(context);
         }
-        Render(context);
+        this.Render(context);
     }
 
     InternalUpdate()
@@ -38,7 +42,7 @@ export class GameObject
         {
             component.Update();
         }
-        Update();
+        this.Update();
     }
 
     InternalOnDestroy()
@@ -47,7 +51,7 @@ export class GameObject
         {
             component.OnDestroy();
         }
-        OnDestroy();
+        this.OnDestroy();
     }
 
     Start() {}
@@ -57,26 +61,26 @@ export class GameObject
 
     AddComponent(type)
     {
-        if(!(type instanceof Component)) return;
-        
-        component = Reflect.construct(type, [this], undefined);
+        Component.IsComponentClassThrow(type);
+
+        const component = Reflect.construct(type, [this]);
         this.#components.push(component);
         return component;
     }
 
     GetComponent(type)
     {
-        if(!(type instanceof Component)) return;
+        Component.IsComponentClassThrow(type);
 
-        returnComp = this.#components.filter(component => component instanceof type);
+        const returnComp = this.#components.filter(component => component instanceof type);
         return returnComp[0];
     }
 
     RemoveComponent(type)
     {
-        if(!(type instanceof Component)) return;
+        Component.IsComponentClassThrow(type);
 
-        toRemove = this.components.findIndex(component => component instanceof type);
+        const toRemove = this.components.findIndex(component => component instanceof type);
         toRemove.OnDestroy();
         this.#components = this.#components.filter(component => component !== toRemove );
     }
