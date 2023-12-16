@@ -20,44 +20,54 @@ export class GameObject
 
     InternalStart()
     {
+        this.Start();
         for(const component of this.#components)
         {
             component.Start();
         }
-        this.Start();
     }
 
     InternalRender(context)
     {
+        this.Render(context);
         for(const component of this.#components)
         {
             component.Render(context);
         }
-        this.Render(context);
     }
 
     InternalUpdate()
     {
+        this.Update();
         for(const component of this.#components)
         {
             component.Update();
         }
-        this.Update();
     }
 
     InternalOnDestroy()
     {
+        this.OnDestroy();
         for(const component of this.#components)
         {
             component.OnDestroy();
         }
-        this.OnDestroy();
+    }
+
+    InternalOnCollision()
+    {
+        this.OnCollision();
+        for(const component of this.#components)
+        {
+            component.OnCollision();
+        }
     }
 
     Start() {}
     Render(context) {}
     Update() {}
     OnDestroy() {}
+    OnCollision(other) {}
 
     AddComponent(type)
     {
@@ -74,6 +84,14 @@ export class GameObject
 
         const returnComp = this.#components.filter(component => component instanceof type);
         return returnComp[0];
+    }
+
+    GetAllComponentsOfType(type)
+    {
+        Component.IsComponentClassThrow(type);
+
+        const returnComp = this.#components.filter(component => component instanceof type);
+        return returnComp;
     }
 
     RemoveComponent(type)

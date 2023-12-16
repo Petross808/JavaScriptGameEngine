@@ -1,9 +1,11 @@
 
 import { Platform } from '../../Game/Platform.js';
 import { Camera } from './Camera.js';
+import { Rigidbody } from './Components/Rigidbody.js';
 import { EventSystem } from './EventSystem.js'
 import { GameObject } from './GameObject.js';
 import { Renderer } from './Renderer.js';
+import { Scene } from './Scene.js';
 import { Vector2 } from './Structs/Vector2.js';
 import { Time } from './Time.js'
 
@@ -16,12 +18,12 @@ export class Game
     #time = null;
     #renderer = null;
     #camera = null;
-
-    #gameObjects = [];
-    #removedGameObjects = [];
+    #currentScene = null;
 
     get renderer() { return this.#renderer; }
     get camera() { return this.#camera; }
+    get currentScene() { return this.#currentScene; }
+
     set camera(value) { this.#camera = value; }
 
     constructor()
@@ -38,8 +40,11 @@ export class Game
 
         this.#eventSystem = new EventSystem();
         this.#time = new Time();
+        requestAnimationFrame((currentTimeStamp) => this.#time.SetDeltaTime(currentTimeStamp));
         this.#renderer = new Renderer("canvas");
+        this.#currentScene = new Scene(this);
         this.#camera = this.Instantiate(new Camera());
+
 
         console.log("GameEngine Initialized")
         this.Start();
@@ -51,6 +56,7 @@ export class Game
 
         this.#time.SetDeltaTime(currentTimeStamp);
         this.Update();
+        Rigidbody.CheckCollisions();
         this.Render();
 
         requestAnimationFrame((currentTimeStamp) => this.GameLoop(currentTimeStamp));
@@ -58,11 +64,7 @@ export class Game
 
     Start()
     {
-        for(const gameObject of this.#gameObjects)
-        {
-            gameObject.InternalStart();
-        }
-        console.log("GameObjects Initialized");
+        this.#currentScene.InternalStart();
         this.#isRunning = true;
         console.log("GameLoop Begin")
         requestAnimationFrame((currentTimeStamp) => this.GameLoop(currentTimeStamp));
@@ -70,22 +72,14 @@ export class Game
 
     Update()
     {
-        for(const gameObject of this.#gameObjects)
-        {
-            gameObject.InternalUpdate();
-        }
-        this.#camera.Update();
-        this.#gameObjects = this.#gameObjects.filter(gameObject => !this.#removedGameObjects.includes(gameObject));
-        this.#removedGameObjects = [];
+        this.currentScene.InternalUpdate();
+        this.#camera?.Update();
     }
 
     Render()
     {
         this.#renderer.PrepareCanvas(this.#camera);
-        for(const gameObject of this.#gameObjects)
-        {
-            gameObject.InternalRender(this.#renderer.context);
-        }
+        this.#currentScene.InternalRender(this.#renderer.context);
         this.#renderer.RestoreCanvas();
     }
 
@@ -99,7 +93,7 @@ export class Game
         object.transform.scale = scale;
         object.transform.parent = parent;
 
-        this.#gameObjects.push(object);
+        this.#currentScene.gameObjects.push(object);
         object.InternalStart();
 
         return object;
@@ -108,7 +102,17 @@ export class Game
     Destroy(object)
     {
         GameObject.IsGameObjectThrow(object);
-        this.#removedGameObjects.push(object);
+        this.#currentScene.removedGameObjects.push(object);
         object.InternalOnDestroy();
+    }
+
+    LoadScene(scene)
+    {
+        Scene.IsSceneThrow(scene);
+
+        this.#currentScene.InternalOnDestroy();
+        this.#currentScene = scene;
+        this.#currentScene.game = this;
+        this.#currentScene.InternalStart();
     }
 }

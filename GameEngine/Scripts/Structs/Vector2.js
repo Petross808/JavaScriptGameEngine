@@ -126,6 +126,7 @@ export class Vector2
     static NormalizeVector(vector)
     {
         this.IsVectorThrow(vector);
-        return new Vector2(vector.x / vector.magnitude, vector.y / vector.magnitude);
+        if(vector.magnitude === 0) return new Vector2(0,0);
+        else return new Vector2(vector.x / vector.magnitude, vector.y / vector.magnitude);
     }
 }

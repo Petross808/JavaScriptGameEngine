@@ -12,6 +12,7 @@ export class Time
         {
             return Time.#instance;
         }
+
     }
 
     static #deltaTime = 0;
@@ -24,7 +25,7 @@ export class Time
     #lastTimeStamp = 0;
     SetDeltaTime(currentTimeStamp)
     {
-        Time.#deltaTime = currentTimeStamp - this.#lastTimeStamp;
+        Time.#deltaTime = (currentTimeStamp - this.#lastTimeStamp) * 0.001;
         this.#lastTimeStamp = currentTimeStamp;
     }
 }

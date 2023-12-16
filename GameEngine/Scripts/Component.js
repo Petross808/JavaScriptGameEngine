@@ -13,6 +13,7 @@ export class Component
     Update() {}
     OnDestroy() {}
     Render(context) {}
+    OnCollision(collider) {}
 
     static IsComponentClassThrow(type)
     {

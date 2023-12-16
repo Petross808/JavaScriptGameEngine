@@ -1,21 +1,25 @@
+import { Component } from '../Component.js';
+
 export class InputHandler extends Component
 {
-    #keyBinds = {};
+    #keyBinds = {key: []};
+
+    get keyBinds() { return this.#keyBinds; }
 
     Start()
     {
-        document.addEventListener("keydown", this.KeyPressed);
-        document.addEventListener("keyup", this.KeyReleased);
+        document.addEventListener("keydown", (key) => this.KeyPressed(key));
+        document.addEventListener("keyup", (key) => this.KeyReleased(key));
     }
 
-    BindKey(key, actionOnPress = ()=>{}, actionOnRelease = ()=>{}) 
+    BindKey(key, target, actionOnPress = ()=>{}, actionOnRelease = ()=>{}) 
     {
-        if(Reflect.get(this.#keyBinds.onPress, key) === undefined)
+        if(!Reflect.has(this.#keyBinds, key))
         {
             Reflect.set(this.#keyBinds, key, []);
         }
 
-        Reflect.get(this.#keyBinds, key).push({onPress: actionOnPress, onRelease: actionOnRelease});
+        Reflect.get(this.#keyBinds, key).push({thisObject: target, onPress: actionOnPress, onRelease: actionOnRelease});
     }
 
     UnbindKey()
@@ -25,23 +29,23 @@ export class InputHandler extends Component
 
     KeyPressed(key)
     {
-        if((action = Reflect.get(this.#keyBinds,key.code)) != undefined)
+        if(Reflect.has(this.keyBinds, key.code))
         {
-            Reflect.apply(action.onPress);
+            for(let bind of Reflect.get(this.keyBinds, key.code))
+            {
+                Reflect.apply(bind.onPress, bind.thisObject, []);
+            }
         }
     }
 
     KeyReleased(key)
     {
-        if((action = Reflect.get(this.#keyBinds,key.code)) != undefined)
+        if(Reflect.has(this.keyBinds, key.code))
         {
-            Reflect.apply(action.onRelease);
+            for(let bind of Reflect.get(this.keyBinds, key.code))
+            {
+                Reflect.apply(bind.onRelease, bind.thisObject, []);
+            }
         }
-    }
-
-    OnDestroy()
-    {
-        document.removeEventListener("keydown", this.KeyPressed);
-        document.removeEventListener("keyup", this.KeyReleased);
     }
 }

@@ -21,7 +21,6 @@ export class Camera extends GameObject
         if(this.#target != null && this.#canvas != null)
         {
             this.transform.position = Vector2.Add(this.#target.transform.position, new Vector2(-1*this.#canvas.width/2,-1*this.#canvas.height/2));
-            console.log(this.#target.transform.position, new Vector2(-1*this.#canvas.width/2,-1*this.#canvas.height/2));
         }
     }
 }
