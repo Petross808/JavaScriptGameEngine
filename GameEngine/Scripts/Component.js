@@ -14,6 +14,7 @@ export class Component
     OnDestroy() {}
     Render(context) {}
     OnCollision(collider) {}
+    OnTrigger(collider) {}
 
     static IsComponentClassThrow(type)
     {

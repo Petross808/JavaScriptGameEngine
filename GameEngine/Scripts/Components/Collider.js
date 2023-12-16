@@ -5,12 +5,15 @@ export class Collider extends Component
 {
     #offset = new Vector2(0, 0);
     #size = new Vector2(10, 10);
+    #isTrigger = false;
 
     get offset() { return this.#offset; }
     get size() { return this.#size; }
+    get isTrigger() { return this.#isTrigger; }
 
     set offset(value) { this.#offset = value; }
     set size(value) { this.#size = value; }
+    set isTrigger(value) { this.#isTrigger = value; }
 
     get anchor() { return Vector2.Add(this.gameObject.transform.position, this.#offset); }
     

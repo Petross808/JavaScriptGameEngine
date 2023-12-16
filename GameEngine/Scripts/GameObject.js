@@ -7,10 +7,14 @@ export class GameObject
     #transform;
     #components;
 
+    #tag;
+
     get game() { return this.#game; }
     get transform() { return this.#transform; }
+    get tag() { return this.#tag; }
 
-    set game(game) { this.#game = game; }
+    set game(value) { this.#game = value; }
+    set tag(value) { this.#tag = value; }
 
     constructor()
     {
@@ -54,12 +58,21 @@ export class GameObject
         }
     }
 
-    InternalOnCollision()
+    InternalOnCollision(collider)
     {
-        this.OnCollision();
+        this.OnCollision(collider);
         for(const component of this.#components)
         {
-            component.OnCollision();
+            component.OnCollision(collider);
+        }
+    }
+
+    InternalOnTrigger(collider)
+    {
+        this.OnTrigger(collider);
+        for(const component of this.#components)
+        {
+            component.OnTrigger(collider);
         }
     }
 
@@ -67,7 +80,8 @@ export class GameObject
     Render(context) {}
     Update() {}
     OnDestroy() {}
-    OnCollision(other) {}
+    OnCollision(collider) {}
+    OnTrigger(collider) {}
 
     AddComponent(type)
     {

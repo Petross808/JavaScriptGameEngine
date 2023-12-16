@@ -17,10 +17,14 @@ export class Player extends GameObject
 
     Start()
     {
+        this.tag = "player";
+
         this.game.camera.target = this;
         this.#rb = this.AddComponent(Rigidbody);
         this.#rb.gravityMultiplier = 0;
-        this.#rb.drag = 5;
+        this.#rb.weight = 50;
+        this.#rb.drag = 10;
+        this.#rb.maxSpeed = 5000; 
 
         this.#input = this.AddComponent(InputHandler);
         this.#input.BindKey("KeyW", this, () => this.#directionHeld.up = true, () => this.#directionHeld.up = false);

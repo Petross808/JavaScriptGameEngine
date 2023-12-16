@@ -38,6 +38,11 @@ export class Vector2
         return new Vector2(this.x * Time.deltaTime, this.y * Time.deltaTime);
     }
 
+    get negative()
+    {
+        return new Vector2(this.x * -1, this.y * -1);
+    }
+
     Set(x,y)
     {
         this.x = x;
@@ -55,6 +60,7 @@ export class Vector2
     {
         this.x *= value;
         this.y *= value;
+        return this;
     }
 
     Add(vector)
@@ -87,6 +93,11 @@ export class Vector2
         this.x = normalizedVector.x;
         this.y  = normalizedVector.y;
         return this;
+    }
+
+    Copy()
+    {
+        return new Vector2(this.x, this.y);
     }
 
 

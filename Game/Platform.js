@@ -12,6 +12,8 @@ export class Platform extends GameObject
     
     Start()
     {
+        this.tag = "platform";
+
         this.#spriteRenderer = this.AddComponent(SpriteRenderer);
         this.#spriteRenderer.size = new Vector2(100,100);
 
@@ -20,5 +22,8 @@ export class Platform extends GameObject
 
         this.#rb = this.AddComponent(Rigidbody);
         this.#rb.gravityMultiplier = 0;
+        this.#rb.isPushable = false;
+        this.#rb.weight = 2;
+        this.#rb.drag = 1;
     }
 }
