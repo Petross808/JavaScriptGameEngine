@@ -82,8 +82,10 @@ export class Vector2
     RotateTowards(other)
     {
         Vector2.IsVectorThrow(other);
-        this.x = other.x - this.x;
-        this.y = other.y - this.y;
+        const mag = this.magnitude;
+        this.x = other.x;
+        this.y = other.y;
+        this.Normalize().Scale(mag);
         return this;
     }
 

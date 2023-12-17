@@ -1,5 +1,5 @@
 
-import { Platform } from '../../Game/Platform.js';
+import { Wall } from '../../Game/Wall.js';
 import { Camera } from './Camera.js';
 import { Rigidbody } from './Components/Rigidbody.js';
 import { EventSystem } from './EventSystem.js'

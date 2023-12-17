@@ -90,7 +90,9 @@ export class Rigidbody extends Component
                 {
                     for(let otherCollider of bodiesWithColliders[j])
                     {
-                        if(!collider.IsOverlapping(otherCollider)) { continue; }
+                        if(!collider.IsOverlapping(otherCollider)) continue;
+                        if((otherCollider.ignoreLayer | collider.gameObject.layer) === otherCollider.ignoreLayer) continue;
+                        if((collider.ignoreLayer | otherCollider.gameObject.layer) === collider.ignoreLayer) continue;
 
                         if(!collider.isTrigger || !otherCollider.isTrigger)
                         {
@@ -122,35 +124,38 @@ export class Rigidbody extends Component
 
     static HandleCollision(collider1, collider2)
     {
-        
-        const rb1 = collider1.gameObject.GetComponent(Rigidbody);
-        const rb2 = collider2.gameObject.GetComponent(Rigidbody);
+        let rb1 = collider1.gameObject.GetComponent(Rigidbody);
+        let rb2 = collider2.gameObject.GetComponent(Rigidbody);
 
         const offset = Vector2.Add(collider1.anchor, collider2.anchor.negative);
-        if(Math.abs(offset.x) > Math.abs(offset.y))
+
+        if(!rb1.isPushable && rb2.isPushable)
         {
-            if(offset.x > 0)
+            if(Math.abs(offset.x/(collider1.size.x+collider2.size.x)) > Math.abs(offset.y/(collider1.size.y+collider2.size.y)))
             {
-                rb1.gameObject.transform.position.x = collider2.anchor.x + collider2.size.x/2 + collider1.size.x/2;
-                rb2.gameObject.transform.position.x = collider1.anchor.x - collider1.size.x/2 - collider2.size.x/2;
+                if(offset.x > 0) rb2.gameObject.transform.position.x = collider1.anchor.x - collider1.size.x/2 - collider2.size.x/2;
+                else rb2.gameObject.transform.position.x = collider1.anchor.x + collider2.size.x/2 + collider1.size.x/2;
             }
             else
             {
-                rb1.gameObject.transform.position.x = collider2.anchor.x - collider2.size.x/2 - collider1.size.x/2
+                if(offset.y > 0) rb2.gameObject.transform.position.y = collider1.anchor.y - collider2.size.y/2 - collider1.size.y/2;
+                else rb2.gameObject.transform.position.y = collider1.anchor.y + collider2.size.y/2 + collider1.size.y/2;
             }
         }
         else
         {
-            if(offset.y > 0)
+            if(Math.abs(offset.x/(collider1.size.x+collider2.size.x)) > Math.abs(offset.y/(collider1.size.y+collider2.size.y)))
             {
-                rb1.gameObject.transform.position.y = collider2.anchor.y + collider2.size.y/2 + collider1.size.y/2
+                if(offset.x > 0) rb1.gameObject.transform.position.x = collider2.anchor.x + collider2.size.x/2 + collider1.size.x/2;
+                else rb1.gameObject.transform.position.x = collider2.anchor.x - collider2.size.x/2 - collider1.size.x/2;
             }
             else
             {
-                rb1.gameObject.transform.position.y = collider2.anchor.y - collider2.size.y/2 - collider1.size.y/2
+                if(offset.y > 0) rb1.gameObject.transform.position.y = collider2.anchor.y + collider2.size.y/2 + collider1.size.y/2;
+                else rb1.gameObject.transform.position.y = collider2.anchor.y - collider2.size.y/2 - collider1.size.y/2;
             }
         }
-
+        
         const elasticity = (rb1.elasticity + rb2.elasticity) / 2;
 
         const vx = (rb1.velocity.x * rb1.weight + rb2.velocity.x * rb2.weight) / (rb1.weight + rb2.weight);
@@ -163,5 +168,6 @@ export class Rigidbody extends Component
 
         if(rb1.isPushable) rb1.velocity = new Vector2(v1x, v1y);
         if(rb2.isPushable) rb2.velocity = new Vector2(v2x, v2y);
+        
     }
 }

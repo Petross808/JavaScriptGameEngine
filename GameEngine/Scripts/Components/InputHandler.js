@@ -22,13 +22,14 @@ export class InputHandler extends Component
         Reflect.get(this.#keyBinds, key).push({thisObject: target, onPress: actionOnPress, onRelease: actionOnRelease});
     }
 
-    UnbindKey()
+    UnbindKey(key)
     {
-        Reflect.set(this.#keyBinds, key, undefined);
+        Reflect.deleteProperty(this.#keyBinds, key);
     }
 
     KeyPressed(key)
     {
+        //console.log(key.code);
         if(Reflect.has(this.keyBinds, key.code))
         {
             for(let bind of Reflect.get(this.keyBinds, key.code))

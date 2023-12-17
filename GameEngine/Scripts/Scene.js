@@ -57,7 +57,7 @@ export class Scene
 
     Inst(object, position = new Vector2(0, 0), rotation = new Vector2(1,0), scale = new Vector2(1,1), parent = null)
     {
-        this.#game.Instantiate(object, position, rotation, scale, parent)
+        return this.#game.Instantiate(object, position, rotation, scale, parent);
     }
 
     static IsSceneThrow(object)

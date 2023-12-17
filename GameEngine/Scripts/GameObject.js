@@ -7,14 +7,17 @@ export class GameObject
     #transform;
     #components;
 
-    #tag;
+    #tag = "";
+    #layer = 1;
 
     get game() { return this.#game; }
     get transform() { return this.#transform; }
     get tag() { return this.#tag; }
+    get layer() { return this.#layer; }
 
     set game(value) { this.#game = value; }
     set tag(value) { this.#tag = value; }
+    set layer(value) { this.#layer = value; }
 
     constructor()
     {
