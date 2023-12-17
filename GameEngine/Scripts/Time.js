@@ -16,10 +16,12 @@ export class Time
     }
 
     static #deltaTime = 0;
+    static #scale = 1;
     
-    static get deltaTime() {
-        return this.#deltaTime;
-    }
+    static get deltaTime() { return this.#deltaTime * this.#scale; }
+    static get scale() { return this.#scale; }
+
+    static set scale(value) { this.#scale = value; }
 
     // Update deltaTime (Called in the main GameLoop)
     #lastTimeStamp = 0;

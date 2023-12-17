@@ -43,6 +43,15 @@ export class GameObject
         }
     }
 
+    InternalLateRender(context)
+    {
+        this.LateRender(context);
+        for(const component of this.#components)
+        {
+            component.LateRender(context);
+        }
+    }
+
     InternalUpdate()
     {
         this.Update();
@@ -81,6 +90,7 @@ export class GameObject
 
     Start() {}
     Render(context) {}
+    LateRender(context) {}
     Update() {}
     OnDestroy() {}
     OnCollision(collider) {}
@@ -115,9 +125,9 @@ export class GameObject
     {
         Component.IsComponentClassThrow(type);
 
-        const toRemove = this.components.findIndex(component => component instanceof type);
-        toRemove.OnDestroy();
-        this.#components = this.#components.filter(component => component !== toRemove );
+        const toRemove = this.#components.findIndex(component => component instanceof type);
+        this.#components[toRemove].OnDestroy();
+        this.#components = this.#components.filter(component => component !== this.#components[toRemove] );
     }
 
     static IsGameObjectThrow(object)

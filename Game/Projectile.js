@@ -26,6 +26,7 @@ export class Projectile extends GameObject
 
     Start()
     {
+        this.tag = "projectile";
         this.layer = 1 << 4;
         this.#render = this.AddComponent(SpriteRenderer);
         this.#render.texture = Sprites.projectile;

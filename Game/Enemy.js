@@ -23,9 +23,11 @@ export class Enemy extends GameObject
     #phase = 1;
     #shotCount = 0;
 
+    get player() { return this.#player.deref(); }
     set player(value) { this.#player = value; }
 
     #ui;
+    get ui() { return this.#ui.deref(); }
     set ui(value) { this.#ui = value; }
 
     Start()
@@ -39,7 +41,7 @@ export class Enemy extends GameObject
 
         this.#render = this.AddComponent(SpriteRenderer);
         this.#render.size = new Vector2(96,96);
-        //this.#render.texture = Sprites.player;
+        this.#render.color = "red";
 
         this.#collider = this.AddComponent(Collider);
         this.#collider.size = new Vector2(60,60);
@@ -70,7 +72,7 @@ export class Enemy extends GameObject
                 case 2:
                     this.#timer = 1;
                     this.SpreadShot2();
-                    if(this.#shotCount <= 5)
+                    if(this.#shotCount < 2)
                     {
                         this.#shotCount += 1;
                         this.#phase = 1;
@@ -108,9 +110,30 @@ export class Enemy extends GameObject
                     }
                     break;
                 case 5:
-                    this.#timer = 2;
+                    this.#timer = 0.5;
                     this.RandomSpread();
-                    this.#phase = 1;
+                    if(this.#shotCount <= 4)
+                    {
+                        this.#shotCount += 1;
+                    }
+                    else
+                    {
+                        this.#shotCount = 0;
+                        this.#phase = 6;
+                    }
+                    break;
+                case 6:
+                    this.#timer = 0.15;
+                    this.ShootAtPlayerWithRandom();
+                    if(this.#shotCount <= 40)
+                    {
+                        this.#shotCount += 1;
+                    }
+                    else
+                    {
+                        this.#shotCount = 0;
+                        this.#phase = 1;
+                    }
                     break;
             }
         }
@@ -151,7 +174,7 @@ export class Enemy extends GameObject
 
     ShootAtPlayer()
     {
-        const vec = this.transform.position.Copy().Add(Vector2.Add(this.#player.transform.position,this.transform.position.negative)).Add(this.transform.position.negative);
+        const vec = this.transform.position.Copy().Add(Vector2.Add(this.player.transform.position,this.transform.position.negative)).Add(this.transform.position.negative);
         this.Shoot(vec.normalized.Scale(600));
     }
 
@@ -175,12 +198,20 @@ export class Enemy extends GameObject
             this.Shoot(Vector2.RotateVector(vec, Math.random()*100-50));
     }
 
+    ShootAtPlayerWithRandom()
+    {
+        const vec = this.transform.position.Copy().Add(Vector2.Add(this.player.transform.position,this.transform.position.negative)).Add(this.transform.position.negative);
+        this.Shoot(vec.normalized.Scale(300).Rotate(Math.random()*40-20));
+    }
+
     OnDestroy()
     {
-        const win = this.#ui.AddComponent(TextUI);
+        Time.scale = 0;
+
+        const win = this.ui.AddComponent(TextUI);
         win.text = "You won";
         win.screenPos.Set(this.game.renderer.canvas.width/2-100,this.game.renderer.canvas.height/2-50);
-        const win2 = this.#ui.AddComponent(TextUI);
+        const win2 = this.ui.AddComponent(TextUI);
         win2.text = "Press R to restart";
         win2.screenPos.Set(this.game.renderer.canvas.width/2-200,this.game.renderer.canvas.height/2+50);
     }

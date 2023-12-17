@@ -80,6 +80,7 @@ export class Game
     {
         this.#renderer.PrepareCanvas(this.#camera);
         this.#currentScene.InternalRender(this.#renderer.context);
+        this.#currentScene.InternalLateRender(this.#renderer.context)
         this.#renderer.RestoreCanvas();
     }
 

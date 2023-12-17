@@ -73,9 +73,8 @@ export class Vector2
 
     Rotate(degrees)
     {
-        const rotated = Vector2.RotateVector(degrees);
-        this.x = rotated.x;
-        this.y = rotated.y;
+        const rot = Vector2.RotateVector(this, degrees)
+        this.Set(rot.x,rot.y);
         return this;
     }
 

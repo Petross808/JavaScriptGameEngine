@@ -6,6 +6,7 @@ import { Enemy } from "./Enemy.js";
 import { Asteroid } from "./Asteroid.js";
 import { Time } from "../GameEngine/Scripts/Time.js";
 import { GameObject } from "../GameEngine/Scripts/GameObject.js";
+import { TextUI } from "../GameEngine/Scripts/TextUI.js";
 
 export class DefaultScene extends Scene
 {
@@ -13,6 +14,8 @@ export class DefaultScene extends Scene
 
     Start()
     {
+        Time.scale = 0;
+
         this.Inst(new Wall(), new Vector2(0, -500), new Vector2(0, 1), new Vector2(21, 1));
         this.Inst(new Wall(), new Vector2(0, 500), new Vector2(0, 1), new Vector2(21, 1));
         this.Inst(new Wall(), new Vector2(-500, 0), new Vector2(0, 1), new Vector2(1, 21));
@@ -21,16 +24,18 @@ export class DefaultScene extends Scene
         const player = this.Inst(new Player(), new Vector2(0, 0));
         const enemy = this.Inst(new Enemy(), new Vector2(0, -700));
         const ui = this.Inst(new GameObject());
+        const startText = ui.AddComponent(TextUI);
+        startText.text = "Press Enter to Start";
+        startText.screenPos.Set(this.game.renderer.canvas.width/2-200,this.game.renderer.canvas.height/2-50);;
 
-        enemy.player = player;
-        enemy.ui = ui;
-        player.ui = ui;
-
-
+        enemy.player = new WeakRef(player);
+        enemy.ui = new WeakRef(ui);
+        player.ui = new WeakRef(ui);
     }
 
     Update()
     {
+
         this.#timer -= Time.deltaTime;
         if(this.#timer <= 0)
         {
@@ -43,11 +48,5 @@ export class DefaultScene extends Scene
     {
         let aster = this.Inst(new Asteroid(), new Vector2(-1000, Math.random()*1000-500));
         aster.rb.velocity.Set(500,Math.random()*20-10);
-    }
-
-    Restart()
-    {
-        console.log("Scene restarted")
-        this.game.LoadScene(this);
     }
 }

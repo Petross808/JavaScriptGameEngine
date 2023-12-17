@@ -9,6 +9,7 @@ import { EntityHealth } from "./EntityHealth.js";
 import { Projectile } from "./Projectile.js";
 import { Sprites } from "./Resources.js";
 import { DefaultScene } from "./DefaultScene.js";
+import { Time } from "../GameEngine/Scripts/Time.js";
 
 export class Player extends GameObject
 {
@@ -22,6 +23,7 @@ export class Player extends GameObject
     #directionHeld = {up: false, down: false, left: false, right: false}
 
     #ui;
+    get ui() { return this.#ui.deref(); }
     set ui(value) { this.#ui = value; }
 
     Start()
@@ -34,7 +36,7 @@ export class Player extends GameObject
         this.#rb.gravityMultiplier = 0;
         this.#rb.weight = 50;
         this.#rb.drag = 40;
-        this.#rb.maxSpeed = 500; 
+        this.#rb.maxSpeed = 300; 
 
         this.#input = this.AddComponent(InputHandler);
         this.#input.BindKey("KeyW", this, () => this.#directionHeld.up = true, () => this.#directionHeld.up = false);
@@ -43,6 +45,7 @@ export class Player extends GameObject
         this.#input.BindKey("KeyD", this, () => this.#directionHeld.right = true, () => this.#directionHeld.right = false);
         this.#input.BindKey("Space", this, this.Shoot);
         this.#input.BindKey("KeyR", this, this.RestartGame);
+        this.#input.BindKey("Enter", this, this.StartGame);
 
         this.#render = [];
         this.#render[0] = this.AddComponent(SpriteRenderer);
@@ -56,7 +59,7 @@ export class Player extends GameObject
         this.#render[2].texture = Sprites.player;
 
         this.#collider = this.AddComponent(Collider);
-        this.#collider.size = new Vector2(60,60);
+        this.#collider.size = new Vector2(50,50);
 
         this.#health = this.AddComponent(EntityHealth);
         this.#health.health = 5;
@@ -67,7 +70,7 @@ export class Player extends GameObject
 
     Update()
     {
-        this.#rb.acceleration = Vector2.Scale(this.GetVectorFromKeys(this.#directionHeld), 10000);
+        this.#rb.acceleration = Vector2.Scale(this.GetVectorFromKeys(this.#directionHeld), 5000);
         this.#healthUI.text = "Health: " + this.#health.health;
     }
 
@@ -89,6 +92,12 @@ export class Player extends GameObject
         return vector.normalized;
     }
 
+    StartGame()
+    {
+        Time.scale = 1;
+        this.ui.RemoveComponent(TextUI);
+    }
+
     RestartGame()
     {
         this.game.LoadScene(new DefaultScene());
@@ -97,16 +106,19 @@ export class Player extends GameObject
 
     OnDestroy()
     {
+        Time.scale = 0;
+
         this.#input.UnbindKey("KeyW");
         this.#input.UnbindKey("KeyS");
         this.#input.UnbindKey("KeyA");
         this.#input.UnbindKey("KeyD");
         this.#input.UnbindKey("Space");
+        this.#input.UnbindKey("Enter");
 
-        const win = this.#ui.AddComponent(TextUI);
+        const win = this.ui.AddComponent(TextUI);
         win.text = "You lost";
         win.screenPos.Set(this.game.renderer.canvas.width/2-100,this.game.renderer.canvas.height/2-50);
-        const win2 = this.#ui.AddComponent(TextUI);
+        const win2 = this.ui.AddComponent(TextUI);
         win2.text = "Press R to restart";
         win2.screenPos.Set(this.game.renderer.canvas.width/2-200,this.game.renderer.canvas.height/2+50);
     }

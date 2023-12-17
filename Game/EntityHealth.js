@@ -5,7 +5,7 @@ export class EntityHealth extends Component
 {
     #health = 10;
     #iframes = false;
-    #itimer = 1;
+    #itimer = 0.5;
 
     get health() { return this.#health; }
 
@@ -35,7 +35,7 @@ export class EntityHealth extends Component
             if(this.#itimer <= 0)
             {
                 this.#iframes = false;
-                this.#itimer = 1;
+                this.#itimer = 0.5;
             }
         }
     }

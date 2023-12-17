@@ -11,6 +11,7 @@ export class Asteroid extends GameObject
     #spriteRenderer;
     #collider;
     #rb;
+    #eh;
 
     get rb() { return this.#rb; }
     
@@ -33,6 +34,10 @@ export class Asteroid extends GameObject
         this.#rb.elasticity = 1;
         this.#rb.weight = 200;
         this.#rb.drag = 0.2;
+
+        this.#eh = this.AddComponent(EntityHealth);
+        this.#eh.health = 5;
+
     }
 
     Update()
@@ -49,5 +54,7 @@ export class Asteroid extends GameObject
         {
             other.gameObject.GetComponent(EntityHealth).TakeDamage(1);
         }
+
+        this.#eh.TakeDamage(1);
     }
 }

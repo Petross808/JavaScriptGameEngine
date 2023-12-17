@@ -13,6 +13,7 @@ export class Component
     Update() {}
     OnDestroy() {}
     Render(context) {}
+    LateRender(context) {}
     OnCollision(collider) {}
     OnTrigger(collider) {}
 

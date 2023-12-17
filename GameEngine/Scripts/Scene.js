@@ -41,6 +41,15 @@ export class Scene
         this.Render(context);
     }
 
+    InternalLateRender(context)
+    {
+        for(const gameObject of this.#gameObjects)
+        {
+            gameObject.InternalLateRender(context);
+        }
+        this.LateRender(context);
+    }
+
     InternalOnDestroy()
     {
         for(const gameObject of this.#gameObjects)
@@ -52,6 +61,7 @@ export class Scene
 
     Start() {}
     Render(context) {}
+    LateRender(context) {}
     Update() {}
     OnDestroy() {}
 
