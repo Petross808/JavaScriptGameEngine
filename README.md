@@ -1,6 +1,6 @@
 # JavaScript Bullet Hell Space Shooter Game + Game Engine
 
- presentation video link: 
+ presentation video link: https://youtu.be/tmRZoj1UBNo
  
  The goal is to kill the enemy at the top by shooting it 25 times.
  The player has 5 health and takes damage from enemy bullets and asteroids hitting them.
