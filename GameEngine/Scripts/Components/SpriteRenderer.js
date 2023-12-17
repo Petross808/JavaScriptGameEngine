@@ -21,6 +21,7 @@ export class SpriteRenderer extends Component
     set texture(value) { this.#texture = value; }
     set flipX(value) { this.#flipX = value; }
 
+    // If texture is specified, render it to the screen, otherwise render a rectangle of the specified color
     Render(context)
     {
         const scaled = Vector2.Multiply(this.#size, this.gameObject.transform.scale);

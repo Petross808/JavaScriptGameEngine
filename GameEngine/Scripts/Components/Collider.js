@@ -30,6 +30,7 @@ export class Collider extends Component
         }   
     }
 
+    // Return true if this collider is overlapping another collider, otherwise false
     IsOverlapping(other)
     {
         const b1 = this.boundingBox;

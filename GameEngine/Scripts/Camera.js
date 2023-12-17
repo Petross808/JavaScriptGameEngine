@@ -11,11 +11,13 @@ export class Camera extends GameObject
     set target(value) { this.#target = value; }
     set canvas(value) { this.#canvas = value; }
 
+    // Get canvas from the renderer
     Start()
     {
         this.#canvas = this.game.renderer.canvas;
     }
 
+    // Set camera position so that the target is in the middle off the canvas every tick
     Update()
     {
         if(this.#target != null && this.#canvas != null)

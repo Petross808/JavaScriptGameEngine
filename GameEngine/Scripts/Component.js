@@ -17,6 +17,7 @@ export class Component
     OnCollision(collider) {}
     OnTrigger(collider) {}
 
+    // Check if type extends the Component class otherwise throw an error
     static IsComponentClassThrow(type)
     {
         if(!(type.prototype instanceof Component))

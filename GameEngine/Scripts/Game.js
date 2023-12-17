@@ -2,7 +2,6 @@
 import { Wall } from '../../Game/Wall.js';
 import { Camera } from './Camera.js';
 import { Rigidbody } from './Components/Rigidbody.js';
-import { EventSystem } from './EventSystem.js'
 import { GameObject } from './GameObject.js';
 import { Renderer } from './Renderer.js';
 import { Scene } from './Scene.js';
@@ -14,7 +13,6 @@ export class Game
     static #instance = null;
 
     #isRunning = false;
-    #eventSystem = null;
     #time = null;
     #renderer = null;
     #camera = null;
@@ -38,8 +36,8 @@ export class Game
             return Game.#instance;
         }
 
-        this.#eventSystem = new EventSystem();
         this.#time = new Time();
+        // Set initial deltaTime before game starts 
         requestAnimationFrame((currentTimeStamp) => this.#time.SetDeltaTime(currentTimeStamp));
         this.#renderer = new Renderer("canvas");
         this.#currentScene = new Scene(this);
@@ -50,6 +48,7 @@ export class Game
         this.Start();
     }
 
+    // Every tick, update deltaTime to the time since the last tick, then Update, evaluate physics and Render
     GameLoop(currentTimeStamp)
     {
         if(!this.#isRunning) return;
@@ -62,6 +61,7 @@ export class Game
         requestAnimationFrame((currentTimeStamp) => this.GameLoop(currentTimeStamp));
     }
 
+    // Call start on the currentScene, set running to true and start the GameLoop
     Start()
     {
         this.#currentScene.InternalStart();
@@ -70,12 +70,14 @@ export class Game
         requestAnimationFrame((currentTimeStamp) => this.GameLoop(currentTimeStamp));
     }
 
+    // Update the currect scene and the camera, if it exists
     Update()
     {
         this.currentScene.InternalUpdate();
         this.#camera?.Update();
     }
 
+    // Prepare canvas, render the currect scene, then LateRender the current scene and restore canvas
     Render()
     {
         this.#renderer.PrepareCanvas(this.#camera);
@@ -84,6 +86,7 @@ export class Game
         this.#renderer.RestoreCanvas();
     }
 
+    // Add GameObject object to the current scene with the specified properties
     Instantiate(object, position = new Vector2(0, 0), rotation = new Vector2(1,0), scale = new Vector2(1,1), parent = null)
     {
         GameObject.IsGameObjectThrow(object);
@@ -100,6 +103,7 @@ export class Game
         return object;
     }
 
+    // Remove GameObject object from the current scene
     Destroy(object)
     {
         GameObject.IsGameObjectThrow(object);
@@ -107,6 +111,7 @@ export class Game
         object.InternalOnDestroy();
     }
 
+    // Destroy current scene and load a new one
     LoadScene(scene)
     {
         Scene.IsSceneThrow(scene);

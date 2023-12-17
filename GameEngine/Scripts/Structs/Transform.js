@@ -3,7 +3,7 @@ import { Vector2 } from "./Vector2.js";
 
 export class Transform
 {
-    #parent;
+    #parent; // parent is not fully implemented
     #position;
     #rotation;
     #scale;
@@ -31,6 +31,7 @@ export class Transform
         this.#scale = scale;
     }
 
+    // Get cardinal vectors based on the rotation of this transform
     get forward() { this.rotation; }
     get left() { return Vector2.RotateVector(this.rotation, 90); }
     get right() { return Vector2.RotateVector(this.rotation, 270); }

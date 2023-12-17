@@ -50,10 +50,11 @@ export class Vector2
         return this;
     }
 
+    // Get the distance between this and another vector
     DistanceFrom(other)
     {
         Vector2.IsVectorThrow(other);
-        return new Vector2(this.x-other.x, this.y-other.y).magnitude;
+        return Vector2.Add(this, other.negative).magnitude;
     }
     
     Scale(value)
@@ -71,20 +72,11 @@ export class Vector2
         return this;
     }
 
+    // Rotate this vector around origin by degrees
     Rotate(degrees)
     {
         const rot = Vector2.RotateVector(this, degrees)
         this.Set(rot.x,rot.y);
-        return this;
-    }
-
-    RotateTowards(other)
-    {
-        Vector2.IsVectorThrow(other);
-        const mag = this.magnitude;
-        this.x = other.x;
-        this.y = other.y;
-        this.Normalize().Scale(mag);
         return this;
     }
 
@@ -101,7 +93,7 @@ export class Vector2
         return new Vector2(this.x, this.y);
     }
 
-
+    // Check if objecct is a Vector2 object otherwise throw an error
     static IsVectorThrow(object)
     {
         if(!(object instanceof Vector2))
@@ -125,6 +117,7 @@ export class Vector2
         return new Vector2(vectorA.x*vectorB.x, vectorA.y*vectorB.y);
     }
 
+    // Get a new Vector2 rotated around origin by degrees from vector
     static RotateVector(vector, degrees)
     {
         Vector2.IsVectorThrow(vector);
@@ -135,6 +128,7 @@ export class Vector2
         return new Vector2(final[0][0], final[1][0]);
     }
 
+    // Get a new normalized Vector2 from vector
     static NormalizeVector(vector)
     {
         this.IsVectorThrow(vector);

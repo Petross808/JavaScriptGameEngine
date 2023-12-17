@@ -18,6 +18,7 @@ export class TextUI extends Component
     set font(value) { this.#font = value; }
     set color(value) { this.#color = value; }
 
+    // Render the text on screen at screenPos
     LateRender(context)
     {
         const camera = this.gameObject.game.camera;

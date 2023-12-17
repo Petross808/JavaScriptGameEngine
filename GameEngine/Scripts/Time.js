@@ -23,7 +23,7 @@ export class Time
 
     static set scale(value) { this.#scale = value; }
 
-    // Update deltaTime (Called in the main GameLoop)
+    // Calculate deltaTime from the time since the previous tick (Called in the main GameLoop)
     #lastTimeStamp = 0;
     SetDeltaTime(currentTimeStamp)
     {
