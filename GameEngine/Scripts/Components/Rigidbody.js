@@ -170,6 +170,8 @@ export class Rigidbody extends Component
         // Set the elasticity coefficient to the average of the two objects
         const elasticity = (rb1.elasticity + rb2.elasticity) / 2;
 
+        // Physics formulas taken from here (http://mircosoft.mzf.cz/texty/kolize.htm), the website is in czech, but the formulas are there
+
         // Calculate the final horizontal velocity of the objects
         const vx = (rb1.velocity.x * rb1.weight + rb2.velocity.x * rb2.weight) / (rb1.weight + rb2.weight);
         const v1x = vx - (elasticity * rb2.weight * (rb1.velocity.x - rb2.velocity.x))/(rb1.weight + rb2.weight);
